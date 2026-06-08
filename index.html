@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Instructivos Premium - Amatique Bay</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Librería para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="https://hotelamatiquebay.com/wp-content/uploads/2021/05/logo2.png" alt="Amatique Bay">
+            </div>
+            
+            <button class="btn-new" id="btnNew"> + NUEVO INSTRUCTIVO</button>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar por título o evento...">
+            </div>
+
+            <div class="config-panel">
+                <label>TASA DE CAMBIO (Q x $1)</label>
+                <input type="number" id="exchangeRate" class="form-control" value="7.80" step="0.01">
+            </div>
+            
+            <div class="instructivo-list" id="instructivoList"></div>
+        </aside>
+
+        <!-- MAIN FORM -->
+        <main class="main-content">
+            <div class="form-card">
+                <div class="section-header">
+                    <h2 class="section-title" id="formTitle">Nuevo Instructivo</h2>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-secondary" id="btnSave">GUARDAR</button>
+                    </div>
+                </div>
+
+                <form id="instructivoForm">
+                    <div class="form-section-title">DATOS DEL EVENTO</div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Título del Instructivo</label>
+                            <input type="text" class="form-control" name="titulo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Evento</label>
+                            <input type="text" class="form-control" name="evento">
+                        </div>
+                    </div>
+                    
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Contacto Cliente</label>
+                            <input type="text" class="form-control" name="contacto">
+                        </div>
+                        <div class="form-group">
+                            <label>Ejecutiva Ventas</label>
+                            <input type="text" class="form-control" name="ejecutiva">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Elaboración</label>
+                            <input type="date" class="form-control" name="fecha_elaboracion">
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Fecha Evento</label>
+                            <input type="date" class="form-control" name="fecha_evento">
+                        </div>
+                        <div class="form-group">
+                            <label>Hora de Inicio</label>
+                            <input type="time" class="form-control" name="hora_ingreso">
+                        </div>
+                        <div class="form-group">
+                            <label>Asistencia Garantizada</label>
+                            <input type="number" class="form-control" name="asistencia">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Cuenta Maestra</label>
+                            <input type="text" class="form-control" name="cuenta_maestra">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 10px; padding-top: 20px;">
+                            <input type="checkbox" name="facturado_pagado" id="chkFacturado">
+                            <label for="chkFacturado" style="margin:0">Facturado y Pagado</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observaciones Generales</label>
+                        <textarea class="form-control" name="observaciones" rows="3"></textarea>
+                    </div>
+
+                    <div class="block-toggle-container">
+                        <label class="toggle-main-label">GESTIÓN DE BLOQUES OPERATIVOS</label>
+                        <div class="toggle-grid">
+                            <label class="toggle-item"><input type="checkbox" data-block="recepcion"> Recepción</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="restaurante"> Restaurante</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="rooming"> Rooming List</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="seguridad"> Seguridad</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="maestra"> Cuenta Maestra</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="cancelacion"> Cancelación</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="pagos"> Políticas Pago</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="facturacion"> Facturación</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="alimentos"> Alimentos y Bebidas</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="hospedaje_desglose"> Desglose Hospedaje</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="alimentos_desglose"> Desglose Alimentos</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="cocteles"> Cócteles</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="cortesias"> Cortesías</label>
+                            <label class="toggle-item"><input type="checkbox" data-block="descuentos"> Descuentos</label>
+                        </div>
+                    </div>
+
+                    <div id="dynamicBlocksContainer"></div>
+
+                    <div class="form-section-title">CONFIGURACIÓN DE CARGOS</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>IVA (%)</label>
+                            <input type="number" class="form-control" name="tax_percent" value="12">
+                        </div>
+                        <div class="form-group">
+                            <label>TURISMO (Hospedaje %) </label>
+                            <input type="number" class="form-control" name="turismo_percent" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>SERVICIO (Alimentos %) </label>
+                            <input type="number" class="form-control" name="service_percent" value="10">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>PROPINA FIJA (Q)</label>
+                            <input type="number" class="form-control" name="propina_fija" value="0">
+                        </div>
+                        <div class="form-group" style="display:flex; flex-direction:column; gap:8px; justify-content:center;">
+                            <label class="toggle-item"><input type="checkbox" name="omit_service"> Omitir Cargo de Servicio</label>
+                            <label class="toggle-item" title="Mostrar totales en Dólares en el reporte"><input type="checkbox" name="show_usd" id="chkShowUSD"> Mostrar también en USD ($)</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- PREVIEW PANEL -->
+        <aside class="preview-panel">
+            <div class="preview-actions">
+                <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR</button>
+                <button class="btn-pdf" id="btnDownloadPDF">📄 DESCARGAR PDF</button>
+            </div>
+            
+            <div class="document-page" id="printArea">
+                <header class="report-header">
+                    <img src="https://hotelamatiquebay.com/wp-content/uploads/2021/05/logo2.png" class="report-logo">
+                    <div class="report-title-area">
+                        <h1>INSTRUCTIVO DE VENTAS</h1>
+                        <p class="report-id" id="pv-id">ID: #0000</p>
+                    </div>
+                </header>
+
+                <div class="report-section">
+                    <div class="report-section-title">INFORMACIÓN GENERAL DEL EVENTO</div>
+                    <div class="report-grid">
+                        <div class="report-field"><span class="report-label">Título:</span> <span id="pv-titulo">---</span></div>
+                        <div class="report-field"><span class="report-label">Evento:</span> <span id="pv-evento">---</span></div>
+                        <div class="report-field"><span class="report-label">Cliente:</span> <span id="pv-contacto">---</span></div>
+                        <div class="report-field"><span class="report-label">Ejecutiva:</span> <span id="pv-ejecutiva">---</span></div>
+                        <div class="report-field"><span class="report-label">Elaboración:</span> <span id="pv-fecha_elaboracion">---</span></div>
+                        <div class="report-field"><span class="report-label">Fecha Evento:</span> <span id="pv-fecha_evento">---</span></div>
+                        <div class="report-field"><span class="report-label">Hora:</span> <span id="pv-hora_ingreso">---</span></div>
+                        <div class="report-field"><span class="report-label">Asistencia:</span> <span id="pv-asistencia">---</span></div>
+                        <div class="report-field"><span class="report-label">Cta. Maestra:</span> <span id="pv-cuenta_maestra">---</span></div>
+                        <div class="report-field"><span class="report-label">Estado:</span> <span id="pv-pago">---</span></div>
+                    </div>
+                </div>
+
+                <div id="pv-dynamic-sections"></div>
+
+                <div class="report-section page-break-avoid">
+                    <div class="report-section-title">OBSERVACIONES</div>
+                    <p id="pv-observaciones" class="text-block">---</p>
+                </div>
+
+                <!-- RESUMEN FINANCIERO -->
+                <div class="financial-summary page-break-avoid">
+                    <div class="summary-columns">
+                        <!-- Cuadro Alimentos -->
+                        <div class="summary-box">
+                            <div class="box-title">RESUMEN ALIMENTOS Y BEBIDAS</div>
+                            <div class="summary-row"><span>Subtotal:</span> <span id="pv-food-sub">Q 0.00</span></div>
+                            <div class="summary-row"><span>IVA (12%):</span> <span id="pv-food-tax">Q 0.00</span></div>
+                            <div class="summary-row" id="pv-row-service"><span>Servicio:</span> <span id="pv-food-service">Q 0.00</span></div>
+                            <div class="summary-row"><span>Propina:</span> <span id="pv-food-propina">Q 0.00</span></div>
+                            <div class="summary-row total"><span>TOTAL A&B:</span> <span id="pv-food-total">Q 0.00</span></div>
+                        </div>
+                        <!-- Cuadro Hospedaje -->
+                        <div class="summary-box">
+                            <div class="box-title">RESUMEN HOSPEDAJE</div>
+                            <div class="summary-row"><span>Subtotal:</span> <span id="pv-room-sub">Q 0.00</span></div>
+                            <div class="summary-row"><span>IVA (12%):</span> <span id="pv-room-tax">Q 0.00</span></div>
+                            <div class="summary-row"><span>Turismo (10%):</span> <span id="pv-room-turismo">Q 0.00</span></div>
+                            <div class="summary-row total"><span>TOTAL HOSPEDAJE:</span> <span id="pv-room-total">Q 0.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="grand-total-box">
+                        <div class="grand-total-row">
+                            <span>TOTAL GENERAL DEL EVENTO (GTQ):</span>
+                            <span id="pv-grand-total-gtq">Q 0.00</span>
+                        </div>
+                        <div class="grand-total-row usd" id="pv-usd-area" style="display:none">
+                            <span>TOTAL EQUIVALENTE (USD):</span>
+                            <span id="pv-grand-total-usd">$ 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="signature-area page-break-avoid">
+                    <div class="signature-box">
+                        <div class="sig-line"></div>
+                        <p>EJECUTIVA DE VENTAS</p>
+                        <p>Amatique Bay Resort</p>
+                    </div>
+                    <div class="signature-box">
+                        <div class="sig-line"></div>
+                        <p>ACEPTACIÓN CLIENTE</p>
+                        <p>Firma y Sello</p>
+                    </div>
+                </footer>
+                
+                <p class="print-footer">
+                    Documento oficial generado el <span id="pv-current-date"></span> - Tasa de cambio aplicada: <span id="pv-rate-val">7.80</span>
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <div class="toast" id="toast">¡Operación exitosa!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
