@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Fecha de elaboración:</strong> ${data.fecha_elaboracion || '---'}</p>
             <p><strong>Persona Contacto:</strong> ${data.contacto || '---'}</p>
             <p><strong>Ejecutiva de ventas:</strong> ${data.ejecutiva || '---'}</p>
-            <p style="text-align: center; margin-top: 10px; font-weight: 900;">***ESTE INSTRUCTIVO CONSTA DE 1 páginas***</p>
+            <p style="text-align: center; margin-top: 10px; font-weight: 900;">***ESTE INSTRUCTIVO CONSTA DE 2 páginas***</p>
             <hr style="border: 1px solid #000; margin: 10px 0;">
         `;
         container.appendChild(metadata);
