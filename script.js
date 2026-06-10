@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dot) return;
         const map = {
             connecting: { color: '#f59e0b', text: 'Conectando...' },
-            ok:         { color: '#16803c', text: 'Supabase ✓' },
+            ok:         { color: '#16803c', text: 'Conectado ✓' },
             saving:     { color: '#3b82f6', text: 'Guardando...' },
             error:      { color: '#dc2626', text: 'Sin conexión' }
         };
